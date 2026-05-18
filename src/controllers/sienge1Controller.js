@@ -1,5 +1,5 @@
 const { Pool } = require('pg');
-const redisClient = require('../config/redisClient.js');
+const redisClient = require('../Config/redisClient');
 
 const pool = new Pool({
     host: process.env.HOST_POSTGRESQL,
