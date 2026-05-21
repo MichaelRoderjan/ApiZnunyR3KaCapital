@@ -27,6 +27,13 @@ const getContatos = async (req, res) => {
 };
 
 const sincronizarClienteZnuny = async (req, res) => {
+    const contextoSync = {
+        origem: 'Vokkan',
+        destino: 'Znuny',
+        prefixoCustomerId: 'V',
+        descricao: ' Sienge/Vokkan',
+    };
+
     try {
         const resultadoContatos = await SiengeContatoService.listarContatos({
             limit: 0,
@@ -36,20 +43,27 @@ const sincronizarClienteZnuny = async (req, res) => {
         const contatos = resultadoContatos.dados;
 
         const resultadoSync = {
+            ...contextoSync,
             total: contatos.length,
             sincronizados: 0,
             falhas: [],
         };
 
         for (const cliente of contatos) {
+            const clienteZnuny = {
+                ...cliente,
+                id: `${contextoSync.prefixoCustomerId}${cliente.id}`,
+                comentario: contextoSync.descricao,
+            };
+
             try {
-                await syncCustomerToZnuny(cliente);
+                await syncCustomerToZnuny(clienteZnuny);
                 resultadoSync.sincronizados++;
             } catch (error) {
                 resultadoSync.falhas.push({
-                    clienteId: cliente.id,
-                    nome: cliente.name,
-                    email: cliente.email,
+                    clienteId: clienteZnuny.id,
+                    nome: clienteZnuny.name,
+                    email: clienteZnuny.email,
                     erro: error.message,
                 });
             }
