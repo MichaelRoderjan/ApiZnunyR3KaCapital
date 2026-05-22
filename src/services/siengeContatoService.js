@@ -32,6 +32,7 @@ class SiengeContatoService {
                 name,
                 cpf,
                 cnpj,
+                cpf_cnpj
                 email,
                 email_extra
             FROM

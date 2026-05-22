@@ -28,13 +28,12 @@ async function runZnunyConsole(args) {
     ]);
 }
 
-async function addCustomerCompany({ customerId, name, city, comment }) {
+async function addCustomerCompany({ customerId, name, city }) {
     return runZnunyConsole([
         'Admin::CustomerCompany::Add',
         '--customer-id', customerId,
         '--name', name,
         '--city', city || '-',
-        '--comment', comment || '-',
         '--no-ansi',
     ]);
 }
