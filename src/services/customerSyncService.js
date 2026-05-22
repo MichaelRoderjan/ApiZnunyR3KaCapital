@@ -20,28 +20,37 @@ function makeLogin(email, customerId) {
 }
 
 async function syncCustomerToZnuny(data) {
-    const customerId = String(data.id || data.cod_filial || data.customerId || '').trim();
+    const origem = String(data.origem || 'V').trim();
+
+    const rawCustomerId = String(
+        data.id ||
+        data.cod_filial ||
+        data.customerId ||
+        ''
+    ).trim();
+
+    const customerId = rawCustomerId.startsWith(origem)
+        ? rawCustomerId
+        : `${origem}${rawCustomerId}`;
+
     const name = String(data.name || data.razao_social || data.nome || '').trim();
     const cpf = String(data.cpf || '').trim();
     const cnpj = String(data.cnpj || data.inscrfederal || '').trim();
+    const comentario = String(data.comentario || '').trim();
     const emailField = `${data.email || ''};${data.email_extra || ''};${data.emails || ''}`;
 
-    if (!customerId) {
-        throw new Error('ID do cliente não informado.');
-    }
-
-    if (!name) {
-        throw new Error('Nome/Razão Social não informado.');
-    }
+    if (!rawCustomerId) throw new Error('ID do cliente não informado.');
+    if (!name) throw new Error('Nome/Razão Social não informado.');
 
     const emails = extractEmails(emailField);
 
-    if (!emails.length) {
-        throw new Error('Nenhum e-mail válido encontrado.');
-    }
+    if (!emails.length) throw new Error('Nenhum e-mail válido encontrado.');
 
     const result = {
+        origem,
+        rawCustomerId,
         customerId,
+        comentario,
         company: null,
         users: [],
         errors: [],
@@ -52,10 +61,12 @@ async function syncCustomerToZnuny(data) {
             customerId,
             name,
             city: cnpj || cpf || '-',
+            comment: comentario,
         });
     } catch (error) {
         result.errors.push({
             step: 'company',
+            customerId,
             message: error.message,
             stderr: error.stderr,
         });
@@ -71,17 +82,20 @@ async function syncCustomerToZnuny(data) {
                 email,
                 firstName: name.substring(0, 50),
                 lastName: 'Cliente',
+                comment: comentario,
             });
 
             result.users.push({
                 email,
                 login,
+                customerId,
                 status: 'created',
                 response: created,
             });
         } catch (error) {
             result.errors.push({
                 step: 'user',
+                customerId,
                 email,
                 login,
                 message: error.message,

@@ -50,23 +50,42 @@ const sincronizarClienteZnuny = async (req, res) => {
         };
 
         for (const cliente of contatos) {
-            const clienteZnuny = {
-                ...cliente,
-                id: `${contextoSync.prefixoCustomerId}${cliente.id}`,
-                comentario: contextoSync.descricao,
-            };
 
             try {
-                await syncCustomerToZnuny(clienteZnuny);
-                resultadoSync.sincronizados++;
-            } catch (error) {
-                resultadoSync.falhas.push({
-                    clienteId: clienteZnuny.id,
-                    nome: clienteZnuny.name,
-                    email: clienteZnuny.email,
-                    erro: error.message,
+
+                await syncCustomerToZnuny({
+
+                    ...cliente,
+
+                    origem: 'V',
+
+                    comentario:
+                        contextoSync.descricao
+
                 });
+
+                resultadoSync.sincronizados++;
+
+            } catch (error) {
+
+                resultadoSync.falhas.push({
+
+                    clienteId:
+                        `V${cliente.id}`,
+
+                    nome:
+                        cliente.name,
+
+                    email:
+                        cliente.email,
+
+                    erro:
+                        error.message
+
+                });
+
             }
+
         }
 
         return res.status(200).json({
