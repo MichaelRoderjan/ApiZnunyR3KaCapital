@@ -28,21 +28,15 @@ async function runZnunyConsole(args) {
     ]);
 }
 
-async function addCustomerCompany({ customerId, name, city, comment, comentario }) {
-    const finalComment = String(comment || comentario || 'Vokkan').trim();
-
-    const args = [
+async function addCustomerCompany({ customerId, name, city, comment }) {
+    return runZnunyConsole([
         'Admin::CustomerCompany::Add',
         '--customer-id', customerId,
         '--name', name,
         '--city', city || '-',
-        '--comment', finalComment,
+        '--comment', comment || 'Vokkan',
         '--no-ansi',
-    ];
-
-    console.log('Comando Znuny CustomerCompany:', args);
-
-    return runZnunyConsole(args);
+    ]);
 }
 
 async function addCustomerUser({ login, customerId, email, firstName, lastName }) {

@@ -61,7 +61,7 @@ async function syncCustomerToZnuny(data) {
         result.company = await addCustomerCompany({
             customerId,
             name,
-            city,
+            city: cpf || cnpj || '-',
             comment: comentario || 'Vokkan'
         });
     } catch (error) {
