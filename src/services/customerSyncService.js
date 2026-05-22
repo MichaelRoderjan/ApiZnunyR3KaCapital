@@ -36,7 +36,8 @@ async function syncCustomerToZnuny(data) {
     const name = String(data.name || data.razao_social || data.nome || '').trim();
     const cpf = String(data.cpf || '').trim();
     const cnpj = String(data.cnpj || data.inscrfederal || '').trim();
-    const comentario = String(data.comentario || '').trim();
+    const city = String(data.city || data.cidade || data.cpf_cnpj || cnpj || cpf || '-').trim();
+    const comentario = String(data.comentario || data.comment || '').trim();
     const emailField = `${data.email || ''};${data.email_extra || ''};${data.emails || ''}`;
 
     if (!rawCustomerId) throw new Error('ID do cliente não informado.');
@@ -60,8 +61,8 @@ async function syncCustomerToZnuny(data) {
         result.company = await addCustomerCompany({
             customerId,
             name,
-            city: cnpj || cpf || '-',
-            comment: comentario,
+            city,
+            comment: comentario || 'Vokkan'
         });
     } catch (error) {
         result.errors.push({
