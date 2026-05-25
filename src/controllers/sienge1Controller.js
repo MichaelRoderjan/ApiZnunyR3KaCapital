@@ -1,4 +1,7 @@
+//Responsável por buscar/listar contatos do Sienge
 const SiengeContatoService = require('../services/siengeContatoService');
+
+//Função que envia/sincroniza um cliente no Znuny
 const { syncCustomerToZnuny } = require('../services/customerSyncService');
 
 const getContatos = async (req, res) => {
