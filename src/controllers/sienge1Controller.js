@@ -1,7 +1,7 @@
 //Responsável por buscar/listar contatos do Sienge
 const SiengeContatoService = require('../services/siengeContatoService');
 
-//Função que envia/sincroniza um cliente no Znuny
+//Função que envia um cliente no Znuny
 const { syncCustomerToZnuny } = require('../services/customerSyncService');
 
 const getContatos = async (req, res) => {
@@ -53,42 +53,26 @@ const sincronizarClienteZnuny = async (req, res) => {
         };
 
         for (const cliente of contatos) {
-
             try {
-
                 await syncCustomerToZnuny({
-
                     ...cliente,
-
                     origem: 'V',
-
                     comentario:
                         contextoSync.descricao
-
                 });
-
                 resultadoSync.sincronizados++;
-
             } catch (error) {
-
                 resultadoSync.falhas.push({
-
                     clienteId:
                         `V${cliente.id}`,
-
                     nome:
                         cliente.name,
-
                     email:
                         cliente.email,
-
                     erro:
                         error.message
-
                 });
-
             }
-
         }
 
         return res.status(200).json({

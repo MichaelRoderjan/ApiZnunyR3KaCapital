@@ -7,10 +7,12 @@ const customerCompanyController = require('../controllers/customerCompanyControl
 
 // Rotas GET
 router.get('/', homeController.home);
+router.get('/clearCache', homeController.clearCache);
 router.get('/contatos', sienge1Controller.getContatos);
+// router.get('/znuny/clientes/adicionar', sienge1Controller.adicionarClienteZnuny);
 router.get('/znuny/clientes/sincronizar', sienge1Controller.sincronizarClienteZnuny);
 
 //Rotas PUT
-router.put('/customer-company/sync', customerCompanyController.sync);
+router.put('/sync/:customerId', customerCompanyController.sync);
 
 module.exports = router;
