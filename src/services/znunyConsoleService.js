@@ -28,7 +28,7 @@ async function runZnunyConsole(args) {
     ]);
 }
 
-async function addCustomerCompany({ customerId, name, city, comment }) {
+async function addCustomerCompanyAdd({ customerId, name, city, comment }) {
     return runZnunyConsole([
         'Admin::CustomerCompany::Add',
         '--customer-id', customerId,
@@ -37,11 +37,38 @@ async function addCustomerCompany({ customerId, name, city, comment }) {
         '--comment', comment || 'Vokkan',
         '--no-ansi',
     ]);
+
+    addCustomerCompanyUpdate({ customerId, name, city, comment });
 }
 
-async function addCustomerUser({ login, customerId, email, firstName, lastName }) {
+async function addCustomerCompanyUpdate({ customerId, name, city, comment }) {
+    return runZnunyConsole([
+        'Admin::CustomerCompany::Update',
+        '--customer-id', customerId,
+        '--name', name,
+        '--city', city || '-',
+        '--comment', comment || 'Vokkan',
+        '--no-ansi',
+    ]);
+}
+
+async function addCustomerUserAdd({ login, customerId, email, firstName, lastName }) {
     return runZnunyConsole([
         'Admin::CustomerUser::Add',
+        '--user-name', login,
+        '--first-name', firstName,
+        '--last-name', lastName || 'Cliente',
+        '--email-address', email,
+        '--customer-id', customerId,
+        '--no-ansi',
+    ]);
+
+    addCustomerUserUpdate({ login, customerId, email, firstName, lastName });
+}
+
+async function addCustomerUserUpdate({ login, customerId, email, firstName, lastName }) {
+    return runZnunyConsole([
+        'Admin::CustomerUser::Update',
         '--user-name', login,
         '--first-name', firstName,
         '--last-name', lastName || 'Cliente',
@@ -52,6 +79,8 @@ async function addCustomerUser({ login, customerId, email, firstName, lastName }
 }
 
 module.exports = {
-    addCustomerCompany,
-    addCustomerUser,
+    addCustomerCompanyAdd,
+    addCustomerCompanyUpdate,
+    addCustomerUserAdd,
+    addCustomerUserUpdate,
 };

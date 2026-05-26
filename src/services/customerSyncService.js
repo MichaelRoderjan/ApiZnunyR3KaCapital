@@ -1,6 +1,6 @@
 const {
-    addCustomerCompany,
-    addCustomerUser,
+    addCustomerCompanyAdd,
+    addCustomerUserAdd,
 } = require('./znunyConsoleService');
 
 function extractEmails(value) {
@@ -58,7 +58,7 @@ async function syncCustomerToZnuny(data) {
     };
 
     try {
-        result.company = await addCustomerCompany({
+        result.company = await addCustomerCompanyAdd({
             customerId,
             name,
             city: cpf || cnpj || '-',
@@ -77,7 +77,7 @@ async function syncCustomerToZnuny(data) {
         const login = makeLogin(email, customerId);
 
         try {
-            const created = await addCustomerUser({
+            const created = await addCustomerUserAdd({
                 login,
                 customerId,
                 email,
