@@ -27,15 +27,7 @@ class SiengeContatoService {
         const params = [];
 
         let query = `
-            SELECT
-                id,
-                name,
-                cpf,
-                cnpj,
-                cpf_cnpj,
-                email,
-                email_extra
-            FROM
+            SELECT * FROM
                 bi_r3ka_dim_clientes_completa
         `;
 

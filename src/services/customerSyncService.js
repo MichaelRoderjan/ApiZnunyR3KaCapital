@@ -20,7 +20,7 @@ function makeLogin(email, customerId) {
 }
 
 async function syncCustomerToZnuny(data) {
-    const origem = String(data.origem || 'V').trim();
+    const origem = String(data.origem || '').trim();
 
     const rawCustomerId = String(
         data.id ||
@@ -29,14 +29,10 @@ async function syncCustomerToZnuny(data) {
         ''
     ).trim();
 
-    const customerId = rawCustomerId.startsWith(origem)
-        ? rawCustomerId
-        : `${origem}${rawCustomerId}`;
+    const customerId = rawCustomerId;
 
     const name = String(data.name || data.razao_social || data.nome || '').trim();
-    const cpf = String(data.cpf || '').trim();
-    const cnpj = String(data.cnpj || data.inscrfederal || '').trim();
-    const city = String(data.city || data.cidade || data.cpf_cnpj || cnpj || cpf || '-').trim();
+    const city = formatCpfCnpj(data.cpf_cnpj).trim();
     const comentario = String(data.comentario || data.comment || '').trim();
     const emailField = `${data.email || ''};${data.email_extra || ''};${data.emails || ''}`;
 
@@ -61,8 +57,8 @@ async function syncCustomerToZnuny(data) {
         result.company = await addCustomerCompanyAdd({
             customerId,
             name,
-            city: cpf || cnpj || '-',
-            comment: comentario || 'Vokkan'
+            city: city || '-',
+            comment: comentario || ''
         });
     } catch (error) {
         result.errors.push({
@@ -106,6 +102,42 @@ async function syncCustomerToZnuny(data) {
     }
 
     return result;
+}
+
+//converte string de 11 ou 14 dígitos para formato de CPF ou CNPJ respectivamente
+function formatCpfCnpj(celula) {
+
+    let formatado = "";
+
+    if (celula.length === 11) {
+        // CPF
+        for (let i = 0; i < celula.length; i++) {
+            formatado += celula[i];
+
+            if (i === 2 || i === 5) {
+                formatado += ".";
+            } else if (i === 8) {
+                formatado += "-";
+            }
+        }
+    } else if (celula.length === 14) {
+        // CNPJ
+        for (let i = 0; i < celula.length; i++) {
+            formatado += celula[i];
+
+            if (i === 1 || i === 4) {
+                formatado += ".";
+            } else if (i === 7) {
+                formatado += "/";
+            } else if (i === 11) {
+                formatado += "-";
+            }
+        }
+    } else {
+        return celula;
+    }
+
+    return formatado;
 }
 
 module.exports = {

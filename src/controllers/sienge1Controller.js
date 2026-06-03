@@ -30,11 +30,17 @@ const getContatos = async (req, res) => {
 };
 
 const sincronizarClienteZnuny = async (req, res) => {
+    const {
+        origem = 'Vokkan',
+        prefixoCustomerId = '',
+        descricao = 'Sienge/Vokkan'
+    } = req.body || {};
+
     const contextoSync = {
-        origem: 'Vokkan',
+        origem,
         destino: 'Znuny',
-        prefixoCustomerId: 'V',
-        descricao: ' Sienge/Vokkan',
+        prefixoCustomerId,
+        descricao,
     };
 
     try {
@@ -56,21 +62,17 @@ const sincronizarClienteZnuny = async (req, res) => {
             try {
                 await syncCustomerToZnuny({
                     ...cliente,
-                    origem: 'V',
-                    comentario:
-                        contextoSync.descricao
+                    origem: '',
+                    comentario: cliente.descricao || '',
                 });
+
                 resultadoSync.sincronizados++;
             } catch (error) {
                 resultadoSync.falhas.push({
-                    clienteId:
-                        `V${cliente.id}`,
-                    nome:
-                        cliente.name,
-                    email:
-                        cliente.email,
-                    erro:
-                        error.message
+                    clienteId: cliente.id,
+                    nome: cliente.name,
+                    email: cliente.email,
+                    erro: error.message
                 });
             }
         }
